@@ -1,0 +1,88 @@
+package com.example.bottom_navigation_example;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
+import android.annotation.SuppressLint;
+import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.snackbar.Snackbar;
+
+public class MainActivity extends AppCompatActivity {
+    Fragment selectedFragment = new HomeFragment();
+    CountDownTimer count;
+
+
+    final Fragment homeFragment = new HomeFragment();
+    final Fragment categoryFragment = new FragmentCategory();
+    final Fragment basketFragment = new BasketFragment();
+    final Fragment accountFragment = new AccountFragment();
+    final FragmentManager fm = getSupportFragmentManager();
+    Fragment active = homeFragment;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        BottomNavigationView navigation = findViewById(R.id.bottom_navigation);
+        navigation.setOnNavigationItemSelectedListener(navListener);
+        navigation.setOnNavigationItemReselectedListener(navReselected);
+
+
+        fm.beginTransaction().add(R.id.fragment_container, categoryFragment, "4").hide(categoryFragment).commit();
+        fm.beginTransaction().add(R.id.fragment_container, basketFragment, "3").hide(basketFragment).commit();
+        fm.beginTransaction().add(R.id.fragment_container, accountFragment, "2").hide(accountFragment).commit();
+        fm.beginTransaction().add(R.id.fragment_container, homeFragment, "1").commit();
+
+    }
+
+
+    @SuppressLint("NonConstantResourceId")
+    private final BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                    switch (item.getItemId()) {
+                        case R.id.nav_home:
+                            fm.beginTransaction().hide(active).show(homeFragment).commit();
+                            active = homeFragment;
+                            return true;
+
+                        case R.id.nav_category:
+                            fm.beginTransaction().hide(active).show(categoryFragment).commit();
+                            active = categoryFragment;
+                            return true;
+
+                        case R.id.nav_basket:
+                            fm.beginTransaction().hide(active).show(basketFragment).commit();
+                            active = basketFragment;
+                            return true;
+                        case R.id.nav_account:
+                            fm.beginTransaction().hide(active).show(accountFragment).commit();
+                            active = accountFragment;
+                            return true;
+                    }
+                    return false;
+                }
+            };
+
+    @SuppressLint("NonConstantResourceId")
+    private final BottomNavigationView.OnNavigationItemReselectedListener navReselected =
+            new BottomNavigationView.OnNavigationItemReselectedListener() {
+                @Override
+                public void onNavigationItemReselected(@NonNull MenuItem item) {
+                }
+            };
+
+
+
+}
